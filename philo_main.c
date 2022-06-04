@@ -6,7 +6,7 @@
 /*   By: rel-hach <rel-hach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/03 22:37:14 by rel-hach          #+#    #+#             */
-/*   Updated: 2022/06/04 05:32:08 by rel-hach         ###   ########.fr       */
+/*   Updated: 2022/06/04 22:42:44 by rel-hach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,10 @@ void	ft_get_args(int ac, char **str, t_commun *data)
 	data->die_time = ft_atoi(str[2]);
 	data->eat_time = ft_atoi(str[3]);
 	data->sleep_time = ft_atoi(str[4]);
+	data->meals_eaten = 0;
+	data->begin_time = 0;
+	data->is_full = 0;
+	data->is_dead = 0;
 	if (ac == 6)
 		data->nb_meals = 0;
 }
@@ -50,10 +54,12 @@ void	ft_create_philos(t_philo *philo)
 
 void	ft_wait_philos_finish(t_philo *philo)
 {
-	while (philo)
+	while (1)
 	{
 		pthread_join(philo->philo, NULL);
 		philo = philo->next;
+		if (philo->next == NULL)
+			philo->next = philo->ptr->head;
 	}
 }
 
