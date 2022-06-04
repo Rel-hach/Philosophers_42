@@ -6,7 +6,7 @@
 /*   By: rel-hach <rel-hach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 17:07:08 by rel-hach          #+#    #+#             */
-/*   Updated: 2022/06/04 01:07:23 by rel-hach         ###   ########.fr       */
+/*   Updated: 2022/06/04 04:25:19 by rel-hach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ t_philo	*ft_lstnew(t_commun *content)
 		return (NULL);
 	if (i == 1)
 		content->head = philo;
+	pthread_mutex_init((&philo->fork), NULL);
 	philo->ptr = content;
 	philo->id = i;
-	pthread_mutex_init((&philo->fork), NULL);
 	return (philo);
 }
 

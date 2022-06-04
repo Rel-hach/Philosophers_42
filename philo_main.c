@@ -6,7 +6,7 @@
 /*   By: rel-hach <rel-hach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/03 22:37:14 by rel-hach          #+#    #+#             */
-/*   Updated: 2022/06/04 01:15:09 by rel-hach         ###   ########.fr       */
+/*   Updated: 2022/06/04 05:32:08 by rel-hach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ t_philo	*ft_create_list(t_commun *data)
 	t_philo	*head;
 	int		i;
 
-	i = 1;
+	i = 0;
 	head = ft_lstnew(data);
 	while (i < data->nb_philos)
 	{
@@ -41,16 +41,23 @@ t_philo	*ft_create_list(t_commun *data)
 
 void	ft_create_philos(t_philo *philo)
 {
-	int	i;
-
-	i = 0;
-	while (i < philo->ptr->nb_philos)
+	while (philo)
 	{
-		pthread_create(&philo->philo, NULL, )
+		pthread_create(&philo->philo, NULL, ft_philo_life_cycle, (void *)philo);
+		philo = philo->next;
 	}
 }
 
-int	main (int ac, char **av)
+void	ft_wait_philos_finish(t_philo *philo)
+{
+	while (philo)
+	{
+		pthread_join(philo->philo, NULL);
+		philo = philo->next;
+	}
+}
+
+int	main(int ac, char **av)
 {
 	t_philo		*philo;
 	t_commun	data;
@@ -61,5 +68,9 @@ int	main (int ac, char **av)
 	ft_check_args(av);
 	ft_get_args(ac, av, &data);
 	philo = ft_create_list(&data);
-	ft_create_philos(&philo);
+	pthread_mutex_init(&data.mutex, NULL);
+	ft_create_philos(philo);
+	ft_wait_philos_finish(philo);
  }
+ 
+ 
