@@ -6,7 +6,7 @@
 /*   By: rel-hach <rel-hach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/03 22:37:42 by rel-hach          #+#    #+#             */
-/*   Updated: 2022/06/05 04:52:35 by rel-hach         ###   ########.fr       */
+/*   Updated: 2022/06/05 06:50:24 by rel-hach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ typedef struct s_philo
 	pthread_t		philo;
 	pthread_mutex_t	fork;
 	int				id;
+	int				eaten;
+	int				full;
 	t_commun		*ptr;
 	struct s_philo	*next;
 }			t_philo;
