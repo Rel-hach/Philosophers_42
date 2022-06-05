@@ -6,7 +6,7 @@
 /*   By: rel-hach <rel-hach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/03 22:37:14 by rel-hach          #+#    #+#             */
-/*   Updated: 2022/06/05 06:35:07 by rel-hach         ###   ########.fr       */
+/*   Updated: 2022/06/05 08:24:17 by rel-hach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,8 @@ void	ft_wait_philos_finish(t_philo *philo)
 		philo = philo->next;
 		if (philo->next == NULL)
 			philo->next = philo->ptr->head;
-		if (philo->ptr->is_full == philo->ptr->nb_philos)
-			break;
+		// if (philo->ptr->is_full == philo->ptr->nb_philos)
+		// 	break;
 	}
 }
 

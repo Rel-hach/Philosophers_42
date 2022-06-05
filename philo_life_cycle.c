@@ -6,7 +6,7 @@
 /*   By: rel-hach <rel-hach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/04 01:39:20 by rel-hach          #+#    #+#             */
-/*   Updated: 2022/06/05 07:55:01 by rel-hach         ###   ########.fr       */
+/*   Updated: 2022/06/05 08:30:30 by rel-hach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,27 +16,32 @@ void	ft_think(t_philo *philo)
 {
 	long	timer;
 
-	pthread_mutex_lock(&philo->ptr->mutex);
-	timer =  ft_get_time() - philo->ptr->timey;
-	printf("%ld %d is thinking\n", timer, philo->id);
-	pthread_mutex_unlock(&philo->ptr->mutex);
+	if (philo->ptr->is_dead == 0)
+	{
+		pthread_mutex_lock(&philo->ptr->mutex);
+		timer =  ft_get_time() - philo->ptr->timey;
+		printf("%ld %d is thinking\n", timer, philo->id);
+		pthread_mutex_unlock(&philo->ptr->mutex);	
+	}
 }
 
 void	ft_sleep(t_philo *philo)
 {
 	long	timer;
-
-	pthread_mutex_lock(&philo->ptr->mutex);
-	timer  =  ft_get_time() - philo->ptr->timey;
-	printf("%ld %d is sleeping\n", timer, philo->id);
-	pthread_mutex_unlock(&philo->ptr->mutex);
-	usleep(20000);
+	if (philo->ptr->is_dead == 0)
+	{
+		pthread_mutex_lock(&philo->ptr->mutex);
+		timer  =  ft_get_time() - philo->ptr->timey;
+		printf("%ld %d is sleeping\n", timer, philo->id);
+		pthread_mutex_unlock(&philo->ptr->mutex);
+		usleep(20000);	
+	}
 }
 
 void	ft_eat(t_philo *philo)
 {
-	long			current;
-	t_philo	*left_fork;
+	long		current;
+	t_philo		*left_fork;
 	
 	left_fork = philo->next;
 	if (philo->next == NULL && philo->ptr->nb_philos > 1)
@@ -73,13 +78,15 @@ void	*ft_philo_life_cycle(void *arg)
 
 	if (philo.id % 2 != 0)
 		usleep(500);
-	while (philo.full != philo.ptr->nb_philos)
+	while (philo.full != philo.ptr->nb_philos && philo.ptr->is_dead == 0)
 	{
 		ft_eat(&philo);
 		ft_sleep(&philo);
 		ft_think(&philo);
+		if (ft_check_if_dead(&philo))
+			exit(1);
 	}
-	if (philo.full == philo.ptr->nb_philos)
+	if (philo.full == philo.ptr->nb_philos || philo.ptr->is_dead > 0)
 		exit (0);
 	return (NULL);
 }
