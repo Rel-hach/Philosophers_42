@@ -6,7 +6,7 @@
 /*   By: rel-hach <rel-hach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/03 22:37:14 by rel-hach          #+#    #+#             */
-/*   Updated: 2022/06/04 22:42:44 by rel-hach         ###   ########.fr       */
+/*   Updated: 2022/06/05 06:35:07 by rel-hach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	ft_get_args(int ac, char **str, t_commun *data)
 	data->is_full = 0;
 	data->is_dead = 0;
 	if (ac == 6)
-		data->nb_meals = 0;
+		data->nb_meals = ft_atoi(str[5]);
 }
 
 t_philo	*ft_create_list(t_commun *data)
@@ -34,18 +34,21 @@ t_philo	*ft_create_list(t_commun *data)
 
 	i = 0;
 	head = ft_lstnew(data);
-	while (i < data->nb_philos)
+	while (i < data->nb_philos - 1)
 	{
 		new = ft_lstnew(data);
 		ft_lstadd_back(&head, new);
 		i++;
 	}
+	t_philo *temp;
+	temp = head;
 	return (head);
 }
 
 void	ft_create_philos(t_philo *philo)
 {
-	while (philo)
+	philo->ptr->timey = ft_get_time();
+	while (philo != NULL)
 	{
 		pthread_create(&philo->philo, NULL, ft_philo_life_cycle, (void *)philo);
 		philo = philo->next;
@@ -54,12 +57,14 @@ void	ft_create_philos(t_philo *philo)
 
 void	ft_wait_philos_finish(t_philo *philo)
 {
-	while (1)
+	while (philo)
 	{
 		pthread_join(philo->philo, NULL);
 		philo = philo->next;
 		if (philo->next == NULL)
 			philo->next = philo->ptr->head;
+		if (philo->ptr->is_full == philo->ptr->nb_philos)
+			break;
 	}
 }
 
@@ -78,5 +83,4 @@ int	main(int ac, char **av)
 	ft_create_philos(philo);
 	ft_wait_philos_finish(philo);
  }
- 
  

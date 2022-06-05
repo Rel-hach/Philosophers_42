@@ -6,9 +6,13 @@
 /*   By: rel-hach <rel-hach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/03 23:14:11 by rel-hach          #+#    #+#             */
-/*   Updated: 2022/06/03 23:14:29 by rel-hach         ###   ########.fr       */
+/*   Updated: 2022/06/05 04:53:43 by rel-hach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+void	ft_check_if_dead(t_philo *philo)
+{
+	if (philo->ptr->meal_time )
+}

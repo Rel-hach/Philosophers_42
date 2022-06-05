@@ -6,7 +6,7 @@
 /*   By: rel-hach <rel-hach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/03 22:37:42 by rel-hach          #+#    #+#             */
-/*   Updated: 2022/06/04 22:42:00 by rel-hach         ###   ########.fr       */
+/*   Updated: 2022/06/05 04:52:35 by rel-hach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,11 @@ typedef struct s_commun
 	int				nb_meals;
 	int				is_dead;
 	int				is_full;
+	long			timey;
 	long			begin_time;
-	int				dead_time;
-	int				meals_eaten;
+	int				meal_time;
 	pthread_mutex_t	mutex;
+	int				meals_eaten;
 	struct s_philo	*head;
 }		t_commun;
 
