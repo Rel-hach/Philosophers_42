@@ -5,60 +5,70 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: rel-hach <rel-hach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/06/03 22:37:42 by rel-hach          #+#    #+#             */
-/*   Updated: 2022/06/05 08:25:58 by rel-hach         ###   ########.fr       */
+/*   Created: 2022/06/12 23:33:37 by rel-hach          #+#    #+#             */
+/*   Updated: 2022/06/12 23:50:55 by rel-hach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILO_H
+#	ifndef PHILO_H
 # define PHILO_H
 
+# include <stdio.h>
+# include <stdlib.h>
 # include <unistd.h>
 # include <pthread.h>
-# include <stdlib.h>
 # include <sys/time.h>
-# include <stdio.h>
+
+// used sturcts :
 
 typedef struct s_commun
 {
-	int				nb_philos;
-	int				die_time;
-	int				eat_time;
-	int				sleep_time;
-	int				nb_meals;
-	int				is_dead;
-	int				is_full;
-	long			timey;
-	long			begin_time;
-	int				meal_time;
-	pthread_mutex_t	mutex;
-	int				meals_eaten;
-	struct s_philo	*head;
+	int				nb_of_philos;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
+	int				meals_should_be_eaten;
+	pthread_mutex_t	writing;
 }		t_commun;
 
 typedef struct s_philo
 {
+	int				id;
+	int				eaten_meals;
+	int				finish_meals;
 	pthread_t		philo;
 	pthread_mutex_t	fork;
-	int				id;
-	int				eaten;
-	int				full;
-	t_commun		*ptr;
+	long			lm_time;
+	struct s_commun	*p;
 	struct s_philo	*next;
-}			t_philo;
+}	t_philo;
 
-// FUNCTIONS :
+// utils :
 
 void	ft_putstr_fd(char *str, int fd);
 void	ft_error_message(char *str);
 int		ft_isdigit(int c);
 int		ft_atoi(char *str);
-long	ft_get_time(void);
-void	ft_check_args(char **str);
-t_philo	*ft_lstnew(t_commun *content);
+int		ft_str_is_number(char **str);
+
+// lists :
+
+t_philo	*ft_lstnew(t_commun *data);
 void	ft_lstadd_back(t_philo **lst, t_philo *new);
-void	ft_eat(t_philo *philo);
-void	*ft_philo_life_cycle(void *arg);
-int		ft_check_if_dead(t_philo *philo);
+t_philo	*ft_lstlast(t_philo *lst);
+void	ft_free_lst(t_philo *philo);
+t_philo	*ft_create_list_table(t_commun *data);
+
+// time management :
+
+long	time_now(void);
+void	ft_usleep(long sleep_time);
+
+// actions :
+
+void	*ft_routine(void *arg);
+void	ft_right_fork(t_philo *philo);
+void	ft_left_fork(t_philo *philo);
+void	ft_sleep_then_think(t_philo *philo);
 
 #endif

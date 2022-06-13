@@ -58,7 +58,7 @@ int	ft_atoi(char	*str)
 	return (n * sign);
 }
 
-void	ft_check_args(char **str)
+int	ft_str_is_number(char **str)
 {
 	int	i;
 	int	j;
@@ -70,9 +70,12 @@ void	ft_check_args(char **str)
 		while (str[i][j])
 		{
 			if (!ft_isdigit(str[i][j]))
-				ft_error_message("numbers only");
+			{
+				return (0);
+			}
 			j++;
 		}
 		i++;
-	}	
+	}
+	return (1);
 }

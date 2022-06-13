@@ -5,82 +5,78 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: rel-hach <rel-hach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/06/03 22:37:14 by rel-hach          #+#    #+#             */
-/*   Updated: 2022/06/05 08:24:17 by rel-hach         ###   ########.fr       */
+/*   Created: 2022/06/12 22:01:42 by rel-hach          #+#    #+#             */
+/*   Updated: 2022/06/13 22:03:33 by rel-hach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	ft_get_args(int ac, char **str, t_commun *data)
+int	ft_check_and_store_args(int ac, char **str, t_commun *data)
 {
-	data->nb_philos = ft_atoi(str[1]);
-	data->die_time = ft_atoi(str[2]);
-	data->eat_time = ft_atoi(str[3]);
-	data->sleep_time = ft_atoi(str[4]);
-	data->meals_eaten = 0;
-	data->begin_time = 0;
-	data->is_full = 0;
-	data->is_dead = 0;
-	if (ac == 6)
-		data->nb_meals = ft_atoi(str[5]);
-}
-
-t_philo	*ft_create_list(t_commun *data)
-{
-	t_philo	*new;
-	t_philo	*head;
-	int		i;
-
-	i = 0;
-	head = ft_lstnew(data);
-	while (i < data->nb_philos - 1)
+	if (ft_str_is_number(str))
 	{
-		new = ft_lstnew(data);
-		ft_lstadd_back(&head, new);
-		i++;
+		data->nb_of_philos = ft_atoi(str[1]);
+		data->time_to_die = ft_atoi(str[2]);
+		data->time_to_eat = ft_atoi(str[3]);
+		data->time_to_sleep = ft_atoi(str[4]);
+		if (ac == 6)
+			data->meals_should_be_eaten = ft_atoi(str[5]);
 	}
-	t_philo *temp;
-	temp = head;
-	return (head);
+	return (1);
 }
 
-void	ft_create_philos(t_philo *philo)
+int	ft_check_numbers_validity(t_commun *data)
 {
-	philo->ptr->timey = ft_get_time();
-	while (philo != NULL)
-	{
-		pthread_create(&philo->philo, NULL, ft_philo_life_cycle, (void *)philo);
-		philo = philo->next;
-	}
+	if (data->nb_of_philos < 1 || data->nb_of_philos > 200)
+		return (0);
+	else if (data->time_to_die < 60 || data->time_to_eat < 60)
+		return (0);
+	else if (data->time_to_sleep < 60)
+		return (0);
+	return (1);
 }
 
-void	ft_wait_philos_finish(t_philo *philo)
+void	ft_wait_and_stop_philos(t_philo *philo)
 {
-	while (philo)
+	while (1)
 	{
-		pthread_join(philo->philo, NULL);
+		if (philo->finish_meals == 1)
+			break ;
+		if (time_now() - philo->lm_time > philo->p->time_to_die)
+		{
+			printf("%ld %d died\n", time_now(), philo->id);
+			break ;
+		}
 		philo = philo->next;
-		if (philo->next == NULL)
-			philo->next = philo->ptr->head;
-		// if (philo->ptr->is_full == philo->ptr->nb_philos)
-		// 	break;
+		usleep(100);
 	}
 }
 
 int	main(int ac, char **av)
 {
-	t_philo		*philo;
 	t_commun	data;
+	t_philo		*philo;
+	int			index;
 
-	philo = NULL;
-	if (ac != 5 && ac != 6)
-		ft_error_message("The number of arguments is wrong");
-	ft_check_args(av);
-	ft_get_args(ac, av, &data);
-	philo = ft_create_list(&data);
-	pthread_mutex_init(&data.mutex, NULL);
-	ft_create_philos(philo);
-	ft_wait_philos_finish(philo);
- }
- 
+	index = 0;
+	if (ac >= 5 && ac <= 6)
+	{
+		if (!ft_check_and_store_args(ac, av, &data))
+			ft_error_message("only numbers are accepted");
+		if (!ft_check_numbers_validity(&data))
+			ft_error_message("a number or more is invalid\n");
+		philo = ft_create_list_table(&data);
+		ft_lstlast(philo)->next = philo;
+		pthread_mutex_init(&philo->p->writing, NULL);
+		while (index < philo->p->nb_of_philos)
+		{
+			pthread_create(&philo->philo, NULL, ft_routine, (void *)philo);
+			philo = philo->next;
+			index++;
+		}
+		ft_wait_and_stop_philos(philo);
+		ft_free_lst(philo);
+	}
+	return (0);
+}
